@@ -33,6 +33,10 @@ dependencies {
     testImplementation 'org.springframework.boot:spring-boot-starter-test'
     testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
     runtimeOnly 'com.h2database:h2'
+
+    // Apache POI for DOCX parsing
+    implementation 'org.apache.poi:poi-ooxml:5.2.5'
+    implementation 'io.github.whitesnakegang:ouroboros:1.0.5'
 }
 
 tasks.named('test') {
