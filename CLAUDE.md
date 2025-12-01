@@ -366,3 +366,93 @@ FormData:
 ✔ DOCX 기반 자동 완성 → 한글에서 PDF 출력
 ✔ 다수 학생을 한 번에 생성하는 빠른 UI
 ✔ 보안·속도·편의성 균형 구조
+
+UI 컴포넌트 (13개)
+
+Form 컴포넌트:
+- Button.jsx - primary, secondary, outline, danger, ghost variants
+- Input.jsx - 텍스트 입력 필드
+- Select.jsx - 드롭다운 선택
+- Checkbox.jsx - 체크박스 (indeterminate 지원)
+- Textarea.jsx - 멀티라인 텍스트 (글자 수 표시 옵션)
+- DatePicker.jsx - 날짜 선택
+- SearchInput.jsx - 검색 아이콘 + 클리어 버튼
+- FileUpload.jsx - 드래그앤드롭 지원
+
+Layout 컴포넌트:
+- Card.jsx - 컨텐츠 카드 (default, elevated, flat, blue)
+- Modal.jsx - 재사용 가능한 모달
+
+Feedback 컴포넌트:
+- Badge.jsx - 상태 배지
+- EmptyState.jsx - 빈 상태 표시
+
+Action 컴포넌트:
+- IconButton.jsx - 아이콘 버튼
+
+🔄 리팩토링된 페이지
+
+1. CSVImportModal → Modal, Button, Select 사용
+2. DocumentForm → Card, Button, Select, Input, SearchInput, FileUpload, IconButton 사용
+3. Preview → Card, Button, Badge, EmptyState 사용
+
+🎨 디자인 시스템
+
+컬러:
+- Primary: Blue (blue-600, blue-700)
+- Background: White
+- Borders: Slate (slate-200, slate-300)
+- Text: Slate-700, Slate-900
+
+일관성:
+- 모든 컴포넌트는 화이트/블루 테마 적용
+- focus 상태: blue-500 ring
+- hover 효과 통일
+- 둥근 모서리 (rounded-lg)
+
+📁 파일 구조
+
+front/src/components/
+├── ui/
+│   ├── index.js          # 통합 export
+│   ├── Button.jsx
+│   ├── Input.jsx
+│   ├── Select.jsx
+│   ├── Checkbox.jsx
+│   ├── Textarea.jsx
+│   ├── DatePicker.jsx
+│   ├── SearchInput.jsx
+│   ├── FileUpload.jsx
+│   ├── Card.jsx
+│   ├── Modal.jsx
+│   ├── Badge.jsx
+│   ├── EmptyState.jsx
+│   └── IconButton.jsx
+├── CSVImportModal.jsx   # 리팩토링됨
+├── DocumentForm.jsx     # 리팩토링됨
+├── Preview.jsx          # 리팩토링됨
+└── Header.jsx
+
+💡 사용 예시
+
+import { Button, Input, Select, Card, Modal } from './components/ui';
+
+// 간단한 사용                                                                                                      
+<Button variant="primary" size="md">저장</Button>
+
+<Input                                                                                                              
+label="이름"                                                                                                      
+value={name}                                                                                                      
+onChange={handleChange}                                                                                           
+required                                                                                                          
+fullWidth                                                                                                         
+/>
+
+<Select                                                                                                             
+label="학교"                                                                                                      
+options={schools}                                                                                                 
+value={selected}                                                                                                  
+onChange={handleSelect}                                                                                           
+/>
+
+모든 컴포넌트가 재사용 가능하며, props를 통해 쉽게 커스터마이징할 수 있습니다!
