@@ -30,13 +30,6 @@ public class DocsController {
             @RequestPart("data") String data,
             @RequestPart("file") MultipartFile file) throws IOException {
 
-        // 디버깅: 받은 데이터 확인
-        System.out.println("=== Received data ===");
-        System.out.println("data: " + data);
-        System.out.println("data type: " + data.getClass().getName());
-        System.out.println("data length: " + data.length());
-        System.out.println("=====================");
-
         DocsUploadRequest request = objectMapper.readValue(data, DocsUploadRequest.class);
         DocsResponse response = docsService.uploadDocs(request, file);
         return ResponseEntity.ok(response);

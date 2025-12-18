@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import Papa from 'papaparse';
+import { Modal, Button, Select } from './ui';
 
 const CSVImportModal = ({ isOpen, onClose, onImport }) => {
     const [csvData, setCsvData] = useState(null);
@@ -82,23 +83,28 @@ const CSVImportModal = ({ isOpen, onClose, onImport }) => {
         onClose();
     };
 
-    if (!isOpen) return null;
-
     return (
-        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
-            <div className="bg-white rounded-2xl shadow-xl max-w-2xl w-full max-h-[90vh] overflow-y-auto">
-                <div className="p-6 border-b border-slate-200">
-                    <div className="flex items-center justify-between">
-                        <h3 className="text-xl font-bold text-slate-800">CSV 파일로 학생 추가</h3>
-                        <button onClick={handleClose} className="text-slate-400 hover:text-slate-600">
-                            <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M6 18L18 6M6 6l12 12"></path>
-                            </svg>
-                        </button>
-                    </div>
-                </div>
-
-                <div className="p-6 space-y-6">
+        <Modal
+            isOpen={isOpen}
+            onClose={handleClose}
+            title="CSV 파일로 학생 추가"
+            size="md"
+            footer={
+                <>
+                    <Button variant="outline" onClick={handleClose}>
+                        취소
+                    </Button>
+                    <Button
+                        variant="primary"
+                        onClick={handleImport}
+                        disabled={!csvData}
+                    >
+                        가져오기
+                    </Button>
+                </>
+            }
+        >
+            <div className="space-y-6">
                     {/* File Upload */}
                     <div>
                         <label className="block text-sm font-semibold text-slate-700 mb-2">CSV 파일 선택</label>
@@ -121,16 +127,12 @@ const CSVImportModal = ({ isOpen, onClose, onImport }) => {
                                     <label className="text-sm font-medium text-slate-700">
                                         {field.label} {field.required && <span className="text-red-500">*</span>}
                                     </label>
-                                    <select
+                                    <Select
                                         value={mapping[field.key]}
                                         onChange={(e) => setMapping({ ...mapping, [field.key]: e.target.value })}
-                                        className="px-3 py-2 rounded-lg border border-slate-300 focus:border-indigo-500 focus:ring-2 focus:ring-indigo-200 outline-none"
-                                    >
-                                        <option value="">선택 안함</option>
-                                        {headers.map(header => (
-                                            <option key={header} value={header}>{header}</option>
-                                        ))}
-                                    </select>
+                                        options={headers.map(header => ({ value: header, label: header }))}
+                                        placeholder="선택 안함"
+                                    />
                                 </div>
                             ))}
 
@@ -142,24 +144,7 @@ const CSVImportModal = ({ isOpen, onClose, onImport }) => {
                         </div>
                     )}
                 </div>
-
-                <div className="p-6 border-t border-slate-200 flex justify-end gap-3">
-                    <button
-                        onClick={handleClose}
-                        className="px-6 py-2 bg-slate-100 hover:bg-slate-200 text-slate-700 font-medium rounded-lg transition-colors"
-                    >
-                        취소
-                    </button>
-                    <button
-                        onClick={handleImport}
-                        disabled={!csvData}
-                        className="px-6 py-2 bg-indigo-600 hover:bg-indigo-700 text-white font-medium rounded-lg transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
-                    >
-                        가져오기
-                    </button>
-                </div>
-            </div>
-        </div>
+        </Modal>
     );
 };
 

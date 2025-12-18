@@ -24,7 +24,7 @@ const Preview = ({ data, onDownload }) => {
         }
     };
 
-    const validStudents = data.students.filter(s => s.name && s.studentId);
+    const validStudents = data.students.filter(s => s.name && s.name.trim() !== '');
     const studentCount = validStudents.length;
 
     return (
