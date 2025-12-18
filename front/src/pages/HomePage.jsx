@@ -8,20 +8,27 @@ const HomePage = () => {
     const [formData, setFormData] = useState({
         school: '',
         template: '',
-        teacherName: '',
-        teacherPhone: '',
-        students: [{ id: 1, name: '', studentId: '', grade: '', classNo: '' }],
-        file: null
+        commonData: {
+            teacherName: '',
+            teacherPhone: '',
+        },
+        students: [{
+            id: 1,
+            name: '',
+            grade: '',
+            classNo: '',
+            studentNo: '',
+            startDate: '',
+            endDate: '',
+            reason: '',
+            document: ''
+        }],
+        file: null,
+        signature: null
     });
 
     const handleFormChange = (newData) => {
         setFormData(newData);
-    };
-
-    const handleDownload = () => {
-        console.log('Downloading documents for:', formData);
-        // TODO: Implement actual document generation
-        alert(`${formData.students.filter(s => s.name && s.studentId).length}개의 문서를 다운로드합니다.`);
     };
 
     return (
@@ -47,9 +54,9 @@ const HomePage = () => {
                                 }`}
                         >
                             👁️ 미리보기
-                            {formData.students.filter(s => s.name && s.studentId).length > 0 && (
+                            {formData.students.filter(s => s.name && s.studentNo).length > 0 && (
                                 <span className="ml-2 px-2 py-0.5 bg-indigo-100 text-indigo-600 text-xs rounded-full">
-                                    {formData.students.filter(s => s.name && s.studentId).length}
+                                    {formData.students.filter(s => s.name && s.studentNo).length}
                                 </span>
                             )}
                         </button>
@@ -67,12 +74,12 @@ const HomePage = () => {
                 ) : (
                     <Preview
                         data={formData}
-                        onDownload={handleDownload}
                     />
                 )}
             </div>
         </div>
     );
 };
+
 
 export default HomePage;

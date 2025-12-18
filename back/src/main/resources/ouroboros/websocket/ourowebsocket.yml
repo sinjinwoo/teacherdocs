@@ -1,0 +1,16 @@
+asyncapi: 3.0.0
+info:
+  title: WebSocket API Documentation
+  version: 1.0.0
+defaultContentType: application/json
+servers: {
+  }
+channels: {
+  }
+operations: {
+  }
+components:
+  schemas: {
+    }
+  messages: {
+    }

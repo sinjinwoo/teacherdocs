@@ -6,7 +6,7 @@ const SignaturePad = ({
   height = 200,
   penColor = '#000000',
   penWidth = 2,
-  backgroundColor = '#ffffff',
+  backgroundColor = 'transparent',
   onSave,
   onClear,
   className = '',
@@ -20,11 +20,11 @@ const SignaturePad = ({
     if (!canvas) return;
 
     const ctx = canvas.getContext('2d');
-    ctx.fillStyle = backgroundColor;
-    ctx.fillRect(0, 0, canvas.width, canvas.height);
+    // Clear canvas instead of filling with color for transparency
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
     ctx.lineCap = 'round';
     ctx.lineJoin = 'round';
-  }, [backgroundColor]);
+  }, []);
 
   const getCoordinates = (e) => {
     const canvas = canvasRef.current;
@@ -79,8 +79,7 @@ const SignaturePad = ({
   const clear = () => {
     const canvas = canvasRef.current;
     const ctx = canvas.getContext('2d');
-    ctx.fillStyle = backgroundColor;
-    ctx.fillRect(0, 0, canvas.width, canvas.height);
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
     setIsEmpty(true);
     if (onClear) onClear();
   };
@@ -96,10 +95,7 @@ const SignaturePad = ({
     if (onSave) onSave(dataURL);
   };
 
-  const undo = () => {
-    // 간단한 실행 취소는 전체 지우기로 대체
-    clear();
-  };
+
 
   return (
     <div className={`flex flex-col gap-3 ${className}`}>
