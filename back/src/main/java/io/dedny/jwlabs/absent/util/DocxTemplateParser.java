@@ -69,7 +69,7 @@ public class DocxTemplateParser {
         // Set을 List<TemplateVariable>로 변환
         List<TemplateVariable> variables = new ArrayList<>();
         for (String key : variableKeys) {
-            variables.add(new TemplateVariable(key, true)); // 기본값: required=true
+            variables.add(TemplateVariable.builder().key(key).required(true).build()); // 기본값: required=true
         }
 
         return variables;

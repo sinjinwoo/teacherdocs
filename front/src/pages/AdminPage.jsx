@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { getApiUrl } from '../config/api';
-import DocxViewer from '../components/DocxViewer';
+
+import EditorOverlay from '../components/EditorOverlay';
 
 const AdminPage = () => {
     const [docs, setDocs] = useState([]);
@@ -12,8 +13,13 @@ const AdminPage = () => {
         schoolId: '',
         type: 'absent',
         name: '새 양식',
-        file: null
+        file: null,
+        variables: [] // 이미지 템플릿용 변수 좌표
     });
+
+    // Editor State
+    const [isEditingTemplate, setIsEditingTemplate] = useState(false);
+    const [editorFile, setEditorFile] = useState(null);
 
     // New School Creation State
     const [isCreatingSchool, setIsCreatingSchool] = useState(false);
@@ -85,14 +91,37 @@ const AdminPage = () => {
 
     const handleFileChange = (e) => {
         if (e.target.files && e.target.files[0]) {
-            setUploadData({ ...uploadData, file: e.target.files[0] });
+            const file = e.target.files[0];
+            const isImage = file.type.startsWith('image/');
+
+            if (isImage) {
+                setEditorFile(file);
+                setIsEditingTemplate(true);
+            } else {
+                alert('이미지(PNG, JPG, WebP) 파일만 지원합니다.');
+            }
         }
+    };
+
+    const handleTemplateSave = (templateData) => {
+        setUploadData({
+            ...uploadData,
+            file: editorFile,
+            variables: templateData.variables
+        });
+        setIsEditingTemplate(false);
+    };
+
+    const handleTemplateCancel = () => {
+        setEditorFile(null);
+        setIsEditingTemplate(false);
+        // Reset file input if needed
     };
 
     const handleUpload = async (e) => {
         e.preventDefault();
         if (!uploadData.file || !uploadData.schoolId) {
-            alert('학교와 파일은 필수입니다.');
+            alert('학교와 이미지 파일을 선택해주세요.');
             return;
         }
 
@@ -100,7 +129,7 @@ const AdminPage = () => {
         const jsonPart = JSON.stringify({
             name: uploadData.name,
             schoolId: Number(uploadData.schoolId),
-            // variables: null (let backend extract)
+            variables: uploadData.variables.length > 0 ? uploadData.variables : null
         });
 
         formData.append('data', jsonPart);
@@ -114,7 +143,7 @@ const AdminPage = () => {
 
             if (response.ok) {
                 alert('업로드 성공!');
-                setUploadData({ ...uploadData, name: '새 양식', file: null });
+                setUploadData({ ...uploadData, name: '새 양식', file: null, variables: [] });
                 fetchData(); // Refresh list
             } else {
                 throw new Error('Upload failed');
@@ -125,13 +154,21 @@ const AdminPage = () => {
     };
 
     return (
-        <div className="max-w-7xl mx-auto px-4 py-8">
+        <div className="max-w-7xl mx-auto px-4 py-8 relative">
+            {isEditingTemplate && (
+                <EditorOverlay
+                    file={editorFile}
+                    onSave={handleTemplateSave}
+                    onCancel={handleTemplateCancel}
+                />
+            )}
             <h1 className="text-3xl font-bold text-slate-800 mb-8">관리자 페이지 - 문서 관리</h1>
 
             <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
                 {/* Upload Form */}
                 <div className="bg-white p-6 rounded-2xl shadow-sm border border-slate-200 h-fit">
                     <h2 className="text-xl font-semibold mb-4">새 양식 업로드</h2>
+
                     <form onSubmit={handleUpload} className="space-y-4">
 
                         {/* School Selection */}
@@ -202,8 +239,19 @@ const AdminPage = () => {
                             </select>
                         </div>
                         <div>
-                            <label className="block text-sm font-medium text-slate-700 mb-1">DOCX 파일</label>
-                            <input type="file" accept=".docx" onChange={handleFileChange} className="block w-full text-sm text-slate-500 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-indigo-50 file:text-indigo-700 hover:file:bg-indigo-100" />
+                            <label className="block text-sm font-medium text-slate-700 mb-1">양식 이미지 파일</label>
+                            <input
+                                type="file"
+                                accept=".png,.jpg,.jpeg,.webp"
+                                onChange={handleFileChange}
+                                className="block w-full text-sm text-slate-500 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-indigo-50 file:text-indigo-700 hover:file:bg-indigo-100"
+                            />
+                            {uploadData.file && !isEditingTemplate && (
+                                <div className="mt-2 text-sm text-green-600 font-medium">
+                                    ✅ {uploadData.file.name}
+                                    {uploadData.variables.length > 0 && ` (${uploadData.variables.length}개 변수 설정됨)`}
+                                </div>
+                            )}
                         </div>
                         <button type="submit" className="w-full bg-indigo-600 text-white py-2 rounded-lg hover:bg-indigo-700 transition">
                             업로드
@@ -228,7 +276,7 @@ const AdminPage = () => {
                                         <th className="px-4 py-3">ID</th>
                                         <th className="px-4 py-3">학교</th>
                                         <th className="px-4 py-3">이름/타입</th>
-                                        <th className="px-4 py-3">파일명</th>
+                                        <th className="px-4 py-3">변수 설정</th>
                                         <th className="px-4 py-3">관리</th>
                                     </tr>
                                 </thead>
@@ -241,10 +289,9 @@ const AdminPage = () => {
                                             <td className="px-4 py-3 font-medium">{doc.schoolName}</td>
                                             <td className="px-4 py-3">
                                                 <div>{doc.name}</div>
-                                                {/* <span className="text-xs text-slate-400">{doc.variables?.length || 0} vars</span> */}
                                             </td>
-                                            <td className="px-4 py-3 text-slate-500 max-w-[150px] truncate" title={doc.name}>
-                                                {doc.name}.docx
+                                            <td className="px-4 py-3">
+                                                <span className="text-xs text-slate-400">{doc.variables?.length || 0} vars</span>
                                             </td>
                                             <td className="px-4 py-3">
                                                 <button
@@ -262,18 +309,10 @@ const AdminPage = () => {
                     )}
                 </div>
             </div>
-            <div className="mt-8">
-                <h2 className="text-xl font-semibold mb-4 text-slate-700">미리보기 (업로드 파일)</h2>
-                {uploadData.file ? (
-                    <DocxViewer file={uploadData.file} className="border border-slate-300 rounded-xl" />
-                ) : (
-                    <div className="h-48 bg-slate-50 border border-dashed border-slate-300 rounded-xl flex items-center justify-center text-slate-400">
-                        파일을 선택하면 미리보기가 표시됩니다.
-                    </div>
-                )}
-            </div>
         </div>
     );
 };
 
 export default AdminPage;
+
+

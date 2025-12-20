@@ -1,0 +1,14 @@
+openapi: 3.1.0
+info:
+  title: API Documentation
+  version: 1.0.0
+paths: {
+  }
+components:
+  schemas: {
+    }
+servers:
+- url: http://localhost:8080
+  description: Local Development Server
+security: [
+  ]

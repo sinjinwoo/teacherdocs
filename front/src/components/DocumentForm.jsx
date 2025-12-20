@@ -17,8 +17,23 @@ const DocumentForm = ({ formData, onFormChange }) => {
 
     // 선택된 템플릿 정보
     const selectedTemplate = templates.find(t => t.id === formData.template);
+
+    // DEBUG: 만약 템플릿 변수가 없으면 디폴트 변수 사용 (개발용)
+    const debugVariables = selectedTemplate?.variables?.length > 0
+        ? selectedTemplate.variables
+        : [
+            { key: 'nm', required: true },
+            { key: 'sn', required: true },
+            { key: 'g', required: true },
+            { key: 'c', required: true },
+            { key: 'sy', required: true },
+            { key: 'ey', required: true },
+            { key: 'r', required: false },
+            { key: 'tn', required: true },
+        ];
+
     const categorizedVars = selectedTemplate
-        ? categorizeVariables(selectedTemplate.variables || [])
+        ? categorizeVariables(debugVariables)
         : null;
 
     // 학교 목록 불러오기
@@ -187,11 +202,10 @@ const DocumentForm = ({ formData, onFormChange }) => {
                                     <div
                                         key={t.id}
                                         onClick={() => onFormChange({ ...formData, template: t.id })}
-                                        className={`cursor-pointer p-4 rounded-xl border-2 transition-all ${
-                                            formData.template === t.id
+                                        className={`cursor-pointer p-4 rounded-xl border-2 transition-all ${formData.template === t.id
                                                 ? 'border-indigo-600 bg-indigo-50'
                                                 : 'border-slate-200 hover:border-indigo-300 hover:bg-slate-50'
-                                        }`}
+                                            }`}
                                     >
                                         <div className="font-bold text-slate-800">{t.name}</div>
                                         {t.desc && <div className="text-xs text-slate-500 mt-1">{t.desc}</div>}

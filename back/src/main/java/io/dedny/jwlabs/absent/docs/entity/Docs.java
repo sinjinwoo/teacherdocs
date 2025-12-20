@@ -48,8 +48,14 @@ public class Docs {
     @Getter
     @NoArgsConstructor
     @AllArgsConstructor
+    @Builder
     public static class TemplateVariable {
         private String key;
+        private String label;
         private Boolean required;
+        private Double x;
+        private Double y;
+        private Integer fontSize;
+        private String color;
     }
 }

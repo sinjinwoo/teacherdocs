@@ -24,26 +24,26 @@ services:
     networks:
       - absent-network
 
-  app:
-    build:
-      context: .
-      dockerfile: Dockerfile
-    container_name: absent-app
-    env_file:
-      - .env
-    environment:
-      SPRING_DATASOURCE_URL: ${SPRING_DATASOURCE_URL}
-      SPRING_DATASOURCE_USERNAME: ${SPRING_DATASOURCE_USERNAME}
-      SPRING_DATASOURCE_PASSWORD: ${SPRING_DATASOURCE_PASSWORD}
-      TZ: Asia/Seoul
-    ports:
-      - "5433:8080"
-    depends_on:
-      postgres:
-        condition: service_healthy
-    restart: unless-stopped
-    networks:
-      - absent-network
+#  app:
+#    build:
+#      context: .
+#      dockerfile: Dockerfile
+#    container_name: absent-app
+#    env_file:
+#      - .env
+#    environment:
+#      SPRING_DATASOURCE_URL: ${SPRING_DATASOURCE_URL}
+#      SPRING_DATASOURCE_USERNAME: ${SPRING_DATASOURCE_USERNAME}
+#      SPRING_DATASOURCE_PASSWORD: ${SPRING_DATASOURCE_PASSWORD}
+#      TZ: Asia/Seoul
+#    ports:
+#      - "5433:8080"
+#    depends_on:
+#      postgres:
+#        condition: service_healthy
+#    restart: unless-stopped
+#    networks:
+#      - absent-network
 
 volumes:
   postgres_data:
