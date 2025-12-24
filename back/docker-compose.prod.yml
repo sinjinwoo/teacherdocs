@@ -4,7 +4,7 @@ services:
     image: postgres:16-alpine
     container_name: absent-postgres
     env_file:
-      - .env.local
+      - .env.prod
     environment:
       TZ: Asia/Seoul
     ports:
@@ -16,6 +16,24 @@ services:
       interval: 10s
       timeout: 5s
       retries: 5
+    restart: unless-stopped
+    networks:
+      - absent-network
+
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: absent-app
+    env_file:
+      - .env.prod
+    environment:
+      TZ: Asia/Seoul
+    ports:
+      - "5433:8080"
+    depends_on:
+      postgres:
+        condition: service_healthy
     restart: unless-stopped
     networks:
       - absent-network

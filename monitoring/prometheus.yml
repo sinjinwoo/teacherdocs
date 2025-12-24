@@ -1,0 +1,19 @@
+global:
+  scrape_interval: 15s
+  evaluation_interval: 15s
+
+scrape_configs:
+  - job_name: 'prometheus'
+    static_configs:
+      - targets: ['localhost:9090']
+
+  - job_name: 'absent-app'
+    metrics_path: '/actuator/prometheus'
+    static_configs:
+      - targets: ['absent-app:8080']
+
+  - job_name: 'promtail'
+    static_configs:
+      - targets: ['monitoring-promtail:9080']
+        labels:
+          instance: 'absent-server'

@@ -36,4 +36,6 @@ out/
 ### VS Code ###
 .vscode/
 .env
+.env.local
+.env.prod
 auth.md

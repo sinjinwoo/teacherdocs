@@ -1,0 +1,58 @@
+server:
+  http_listen_port: 9080
+  grpc_listen_port: 0
+
+positions:
+  filename: /tmp/positions.yaml
+
+clients:
+  - url: http://loki:3100/loki/api/v1/push   # ✅ 추천(네트워크 서비스명)
+
+scrape_configs:
+  - job_name: system
+    static_configs:
+      - targets: [localhost]
+        labels:
+          job: promtail
+          instance: absent-server
+          env: production
+          __path__: /var/log/*.log           # ✅ 패턴 정리
+
+  - job_name: container_logs
+    docker_sd_configs:
+      - host: unix:///var/run/docker.sock
+        refresh_interval: 5s
+
+    # ✅ 타임스탬프 파싱(선택이지만 강추: "시간 늘리면 보임" 문제 해결)
+    pipeline_stages:
+      - regex:
+          expression: '^(?P<ts>\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}\.\d+\+\d{2}:\d{2})'
+      - timestamp:
+          source: ts
+          format: RFC3339
+
+    relabel_configs:
+      - source_labels: ['__meta_docker_container_name']
+        regex: '/(.*)'
+        target_label: container
+
+      - source_labels: ['__meta_docker_container_name']
+        regex: '/(.*)'
+        target_label: app
+
+      # 기존 대시보드가 compose_service를 기대하면 유지
+      - source_labels: ['__meta_docker_container_name']
+        regex: '/(.*)'
+        target_label: compose_service
+        replacement: 'app-$1'
+
+      - target_label: job
+        replacement: promtail
+
+      - target_label: instance
+        replacement: absent-server
+
+      # ✅ 핵심: 실제 컨테이너 로그 파일을 tail하도록 경로 지정
+      - source_labels: ['__meta_docker_container_id']
+        target_label: __path__
+        replacement: /var/lib/docker/containers/$1/*-json.log

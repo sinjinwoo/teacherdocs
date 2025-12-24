@@ -40,6 +40,11 @@ dependencies {
 
     // Apache Commons CSV for CSV parsing
     implementation 'org.apache.commons:commons-csv:1.10.0'
+
+    implementation 'org.springframework.boot:spring-boot-starter-actuator'
+
+    // Prometheus metrics
+    implementation 'io.micrometer:micrometer-registry-prometheus'
 }
 
 tasks.named('test') {
