@@ -22,13 +22,6 @@ public class SchoolController {
     private final SchoolService schoolService;
 
     @ApiState(state = State.COMPLETED)
-    @PostMapping
-    public ResponseEntity<SchoolResponse> createSchool(@RequestBody SchoolRequest request) {
-        SchoolResponse response = schoolService.createSchool(request);
-        return ResponseEntity.ok(response);
-    }
-
-    @ApiState(state = State.COMPLETED)
     @GetMapping
     public ResponseEntity<List<SchoolResponse>> getAllSchools() {
         List<SchoolResponse> schools = schoolService.getAllSchools();
@@ -42,12 +35,6 @@ public class SchoolController {
         return ResponseEntity.ok(school);
     }
 
-    @ApiState(state = State.COMPLETED)
-    @DeleteMapping("/{id}")
-    public ResponseEntity<Void> deleteSchool(@PathVariable Long id) {
-        schoolService.deleteSchool(id);
-        return ResponseEntity.noContent().build();
-    }
 
     // 이름으로 검색
     @ApiState(state = State.COMPLETED)
@@ -78,15 +65,4 @@ public class SchoolController {
         }
     }
 
-    // 전체 삭제 (재임포트용)
-    @ApiState(state = State.COMPLETED)
-    @DeleteMapping("/clear")
-    public ResponseEntity<Map<String, String>> clearAll() {
-        schoolService.deleteAll();
-
-        Map<String, String> response = new HashMap<>();
-        response.put("message", "전체 학교 데이터 삭제 완료");
-
-        return ResponseEntity.ok(response);
-    }
 }

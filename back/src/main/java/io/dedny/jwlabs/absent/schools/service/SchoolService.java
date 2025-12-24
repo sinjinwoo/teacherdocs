@@ -29,15 +29,6 @@ public class SchoolService {
 
     private final SchoolRepository schoolRepository;
 
-    @Transactional
-    public SchoolResponse createSchool(SchoolRequest request) {
-        School school = School.builder()
-                .name(request.getName())
-                .build();
-        School savedSchool = schoolRepository.save(school);
-        return SchoolResponse.from(savedSchool);
-    }
-
     public List<SchoolResponse> getAllSchools() {
         return schoolRepository.findAll()
                 .stream()
@@ -49,14 +40,6 @@ public class SchoolService {
         School school = schoolRepository.findById(id)
                 .orElseThrow(() -> new IllegalArgumentException("School not found with id: " + id));
         return SchoolResponse.from(school);
-    }
-
-    @Transactional
-    public void deleteSchool(Long id) {
-        if (!schoolRepository.existsById(id)) {
-            throw new IllegalArgumentException("School not found with id: " + id);
-        }
-        schoolRepository.deleteById(id);
     }
 
     // 이름 검색
@@ -112,13 +95,5 @@ public class SchoolService {
         log.info("CSV 임포트 완료: {} 개 학교 저장", schools.size());
 
         return schools.size();
-    }
-
-    // 전체 삭제 (재임포트용)
-    @Transactional
-    public void deleteAll() {
-        long count = schoolRepository.count();
-        schoolRepository.deleteAll();
-        log.info("전체 학교 삭제: {} 개", count);
     }
 }

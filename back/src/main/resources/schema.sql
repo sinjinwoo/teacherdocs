@@ -9,3 +9,6 @@ CREATE EXTENSION IF NOT EXISTS pg_trgm;
 -- GIN 인덱스 생성 (이미 존재하면 무시)
 CREATE INDEX IF NOT EXISTS idx_school_name_gin
 ON schools USING gin(name gin_trgm_ops);
+
+CREATE INDEX IF NOT EXISTS idx_docs_name_gin
+ON docs USING gin(name gin_trgm_ops);

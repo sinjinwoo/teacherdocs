@@ -12,7 +12,12 @@ import java.time.LocalDateTime;
 import java.util.List;
 
 @Entity
-@Table(name = "docs")
+@Table(
+    name = "docs",
+    indexes = {
+        @Index(name = "idx_docs_user_id", columnList = "user_id")
+    }
+)
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor

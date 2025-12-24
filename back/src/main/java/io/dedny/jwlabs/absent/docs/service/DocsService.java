@@ -85,4 +85,20 @@ public class DocsService {
                 .map(DocsResponse::from)
                 .collect(Collectors.toList());
     }
+
+    // 내 문서 목록 조회
+    public List<DocsResponse> getDocsByUser(Long userId) {
+        return docsRepository.findByUserIdOrderByCreatedAtDesc(userId)
+                .stream()
+                .map(DocsResponse::from)
+                .collect(Collectors.toList());
+    }
+
+    // 문서명 검색
+    public List<DocsResponse> searchDocsByName(String name) {
+        return docsRepository.findByNameContainingOrderByCreatedAtDesc(name)
+                .stream()
+                .map(DocsResponse::from)
+                .collect(Collectors.toList());
+    }
 }
