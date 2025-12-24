@@ -13,6 +13,7 @@ import java.util.regex.Pattern;
 
 /**
  * DOCX 파일에서 {{variableName}} 형식의 자리표시자를 추출하는 유틸리티
+ * 현재 사용 하지 않음.
  */
 @Slf4j
 @Component

@@ -34,9 +34,17 @@ dependencies {
     testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
     runtimeOnly 'com.h2database:h2'
 
-    // Apache POI for DOCX parsing
+    // Apache POI for DOCX parsing - Todo 곧 삭제 예정
     implementation 'org.apache.poi:poi-ooxml:5.2.5'
     implementation 'io.github.whitesnakegang:ouroboros:1.0.5'
+
+    // Apache Commons CSV for CSV parsing
+    implementation 'org.apache.commons:commons-csv:1.10.0'
+
+    implementation 'org.springframework.boot:spring-boot-starter-actuator'
+
+    // Prometheus metrics
+    implementation 'io.micrometer:micrometer-registry-prometheus'
 }
 
 tasks.named('test') {

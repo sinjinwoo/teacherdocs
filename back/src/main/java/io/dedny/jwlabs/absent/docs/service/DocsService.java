@@ -26,7 +26,6 @@ public class DocsService {
 
     private final DocsRepository docsRepository;
     private final SchoolRepository schoolRepository;
-    private final DocxTemplateParser templateParser;
 
     @Transactional
     public DocsResponse uploadDocs(DocsUploadRequest request, MultipartFile file) throws IOException {
@@ -38,9 +37,8 @@ public class DocsService {
         // variables가 제공되지 않았으면 자동 추출
         List<TemplateVariable> variables = request.getVariables();
         if (variables == null || variables.isEmpty()) {
+            //Todo 로그말고 오류발생 시킬것.
             log.info("No variables provided, extracting from DOCX file...");
-            variables = templateParser.extractVariables(fileData);
-            log.info("Extracted {} variables from template", variables.size());
         }
 
         Docs docs = Docs.builder()
@@ -83,6 +81,22 @@ public class DocsService {
 
     public List<DocsResponse> getAllDocs() {
         return docsRepository.findAll()
+                .stream()
+                .map(DocsResponse::from)
+                .collect(Collectors.toList());
+    }
+
+    // 내 문서 목록 조회
+    public List<DocsResponse> getDocsByUser(Long userId) {
+        return docsRepository.findByUserIdOrderByCreatedAtDesc(userId)
+                .stream()
+                .map(DocsResponse::from)
+                .collect(Collectors.toList());
+    }
+
+    // 문서명 검색
+    public List<DocsResponse> searchDocsByName(String name) {
+        return docsRepository.findByNameContainingOrderByCreatedAtDesc(name)
                 .stream()
                 .map(DocsResponse::from)
                 .collect(Collectors.toList());

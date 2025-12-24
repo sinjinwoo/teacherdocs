@@ -10,4 +10,10 @@ import java.util.List;
 public interface DocsRepository extends JpaRepository<Docs, Long> {
     List<Docs> findBySchoolId(Long schoolId);
     List<Docs> findBySchoolIdOrderByCreatedAtDesc(Long schoolId);
+
+    // 내 문서 목록 조회 (user_id 인덱스 활용)
+    List<Docs> findByUserIdOrderByCreatedAtDesc(Long userId);
+
+    // 문서명 검색 (name GIN 인덱스 활용)
+    List<Docs> findByNameContainingOrderByCreatedAtDesc(String name);
 }

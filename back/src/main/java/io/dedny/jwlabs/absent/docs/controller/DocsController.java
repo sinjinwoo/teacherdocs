@@ -75,4 +75,20 @@ public class DocsController {
         docsService.deleteDocs(id);
         return ResponseEntity.noContent().build();
     }
+
+    // 내 문서 목록 조회
+    @ApiState(state = State.COMPLETED)
+    @GetMapping("/user/{userId}")
+    public ResponseEntity<List<DocsResponse>> getDocsByUser(@PathVariable Long userId) {
+        List<DocsResponse> docs = docsService.getDocsByUser(userId);
+        return ResponseEntity.ok(docs);
+    }
+
+    // 문서명 검색
+    @ApiState(state = State.COMPLETED)
+    @GetMapping("/search")
+    public ResponseEntity<List<DocsResponse>> searchDocsByName(@RequestParam String name) {
+        List<DocsResponse> docs = docsService.searchDocsByName(name);
+        return ResponseEntity.ok(docs);
+    }
 }

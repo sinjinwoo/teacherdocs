@@ -1,6 +1,7 @@
 package io.dedny.jwlabs.absent.docs.entity;
 
 import io.dedny.jwlabs.absent.schools.entity.School;
+import io.dedny.jwlabs.absent.users.entity.User;
 import jakarta.persistence.*;
 import lombok.*;
 import org.hibernate.annotations.CreationTimestamp;
@@ -11,7 +12,12 @@ import java.time.LocalDateTime;
 import java.util.List;
 
 @Entity
-@Table(name = "docs")
+@Table(
+    name = "docs",
+    indexes = {
+        @Index(name = "idx_docs_user_id", columnList = "user_id")
+    }
+)
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor
@@ -28,6 +34,10 @@ public class Docs {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "school_id", nullable = false)
     private School school;
+
+    @OneToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "user_id", nullable = false)
+    private User user;
 
     @JdbcTypeCode(SqlTypes.VARBINARY)
     @Column(nullable = false, columnDefinition = "BYTEA")
