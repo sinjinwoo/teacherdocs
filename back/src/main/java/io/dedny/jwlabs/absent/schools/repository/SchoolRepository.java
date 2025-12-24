@@ -4,9 +4,14 @@ import io.dedny.jwlabs.absent.schools.entity.School;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
+import java.util.List;
 import java.util.Optional;
 
 @Repository
 public interface SchoolRepository extends JpaRepository<School, Long> {
+
     Optional<School> findByName(String name);
+
+    // 이름으로 검색 (LIKE %name%)
+    List<School> findByNameContaining(String name);
 }
