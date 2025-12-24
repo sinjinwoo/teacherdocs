@@ -1,11 +1,10 @@
 package io.dedny.jwlabs.absent.schools.entity;
 
-import io.dedny.jwlabs.absent.docs.entity.Docs;
 import jakarta.persistence.*;
 import lombok.*;
+import org.hibernate.annotations.CreationTimestamp;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.time.LocalDateTime;
 
 @Entity
 @Table(name = "schools")
@@ -22,7 +21,7 @@ public class School {
     @Column(nullable = false, length = 255)
     private String name;
 
-    @OneToMany(mappedBy = "school", cascade = CascadeType.ALL, orphanRemoval = true)
-    @Builder.Default
-    private List<Docs> docs = new ArrayList<>();
+    @CreationTimestamp
+    @Column(updatable = false)
+    private LocalDateTime createdAt;
 }
